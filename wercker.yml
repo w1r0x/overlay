@@ -1,22 +1,23 @@
 box: wercker-labs/docker
 build:
-  - script:
-      name: Populate local docker image
-      code: |-
-        for image in $WERCKER_CACHE_DIR/docker-images/*.tgz; do
-          docker load < $image
-        done
+  steps:
+    - script:
+        name: Populate local docker image
+        code: |-
+          for image in $WERCKER_CACHE_DIR/docker-images/*.tgz; do
+            docker load < $image
+          done
 
-  - script:
-      name: Testing cache
-      code: docker run -i -t busybox true
+    - script:
+        name: Testing cache
+        code: docker run -i -t busybox true
 
-  - script:
-      name: Store docker image to cache
-      code: |-
-        if [ ! -d $WERCKER_CACHE_DIR/docker-images ]; then
-          mkdir $WERCKER_CACHE_DIR/docker-images
-        fi
-        for image in $(docker images | grep '^tests/' | awk '{ print $1 }'); do
-          docker save $image > $WERCKER_CACHE_DIR/docker-images/$(basename $image).tgz
-        done
+    - script:
+        name: Store docker image to cache
+        code: |-
+          if [ ! -d $WERCKER_CACHE_DIR/docker-images ]; then
+            mkdir $WERCKER_CACHE_DIR/docker-images
+          fi
+          for image in $(docker images | grep '^tests/' | awk '{ print $1 }'); do
+            docker save $image > $WERCKER_CACHE_DIR/docker-images/$(basename $image).tgz
+          done
