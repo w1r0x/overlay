@@ -3,7 +3,7 @@ build:
   steps:
     - script:
         name: Populate local docker image
-        code: |-
+        code: |
           for image in $WERCKER_CACHE_DIR/docker-images/*.tgz; do
             docker load < $image
           done
@@ -14,7 +14,7 @@ build:
 
     - script:
         name: Store docker image to cache
-        code: |-
+        code: |
           if [ ! -d $WERCKER_CACHE_DIR/docker-images ]; then
             mkdir $WERCKER_CACHE_DIR/docker-images
           fi
