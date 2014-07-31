@@ -1,15 +1,18 @@
 box: wercker-labs/docker
 build:
   - script:
-      name: Populate cache
+      name: Populate local docker image
       code: |-
         for image in $WERCKER_CACHE_DIR/docker-images/*.tgz; do
           docker load < $image
         done
 
+  - script:
+      name: Testing cache
+      code: docker run -i -t busybox true
 
   - script:
-      name: Store cache
+      name: Store docker image to cache
       code: |-
         if [ ! -d $WERCKER_CACHE_DIR/docker-images ]; then
           mkdir $WERCKER_CACHE_DIR/docker-images
