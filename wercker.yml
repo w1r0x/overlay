@@ -1,0 +1,19 @@
+box: wercker-labs/docker
+build:
+  - script:
+      name: Populate cache
+      code: |-
+        for image in $WERCKER_CACHE_DIR/docker-images/*.tgz; do
+          docker load < $image
+        done
+
+
+  - script:
+      name: Store cache
+      code: |-
+        if [ ! -d $WERCKER_CACHE_DIR/docker-images ]; then
+          mkdir $WERCKER_CACHE_DIR/docker-images
+        fi
+        for image in $(docker images | grep '^tests/' | awk '{ print $1 }'); do
+          docker save $image > $WERCKER_CACHE_DIR/docker-images/$(basename $image).tgz
+        done
